@@ -1,5 +1,5 @@
 console.log("=== CEP ===");
-
+const fieldCEP = document.querySelector("#cep");
 let addresses = (localStorage.addresses) ? JSON.parse(localStorage.addresses): [];
 
 function onlyNumbers(){
@@ -9,14 +9,15 @@ function onlyNumbers(){
 function validateEntry(){
     if(this.value.length === 8){
         this.classList.remove("error");
-        getAddress(this.value);
     }else{
         this.classList.add("error");
         this.focus();
     }
 };
 
-function getAddress(postalCode){
+function getAddress(e){
+    e.preventDefault();
+    const postalCode = fieldCEP.value;
     const endpoint = `https://viacep.com.br/ws/${postalCode}/json/`;
 
     const config = {
@@ -30,7 +31,6 @@ function getAddress(postalCode){
         .catch(getAddressError);
 };
 
-
 function getAddressSuccess(address){
         const erro = address.erro;
         if (erro){
@@ -42,14 +42,13 @@ function getAddressSuccess(address){
 }
 
 function getAddressError(){
-    alert("Serviço indiponível no momento. Tente novamente mais tarde!");
+    alert("Serviço indisponível no momento. Tente novamente mais tarde!");
 }
 
 function updateCards(){
     
     const card = addresses.map(function(cardInfo){
        const {logradouro, cep, localidade, uf, bairro} = cardInfo;
-       console.log(logradouro);
         return `<div class="card" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">${logradouro}</h5>
@@ -71,7 +70,7 @@ function saveAdress(address){
 }
 
 // Mapping Events
-document.querySelector("#cep").addEventListener("input", onlyNumbers);
-document.querySelector("#cep").addEventListener("focusout", validateEntry);
-//document.querySelector(".btn-primary").addEventListener("click", getAddress());
+fieldCEP.addEventListener("input", onlyNumbers);
+fieldCEP.addEventListener("focusout", validateEntry);
+document.querySelector(".btn-primary").addEventListener("click", getAddress);
 document.addEventListener("DOMContentLoaded", updateCards);
