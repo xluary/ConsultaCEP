@@ -9,13 +9,18 @@ function onlyNumbers(){
 function validateEntry(){
     if(this.value.length === 8){
         this.classList.remove("error");
+        document.querySelector(".btn-primary").disabled = false;
+
     }else{
         this.classList.add("error");
         this.focus();
+        document.querySelector(".btn-primary").disabled = true;
     }
+    
 };
 
 function getAddress(e){
+
     e.preventDefault();
     const postalCode = fieldCEP.value;
     const endpoint = `https://viacep.com.br/ws/${postalCode}/json/`;
@@ -45,8 +50,7 @@ function getAddressError(){
     alert("Serviço indisponível no momento. Tente novamente mais tarde!");
 }
 
-function updateCards(){
-    
+function updateCards(){  
     const card = addresses.map(function(cardInfo){
        const {logradouro, cep, localidade, uf, bairro} = cardInfo;
         return `<div class="card" style="width: 18rem;">
@@ -68,6 +72,7 @@ function saveAdress(address){
     addresses.push(address);
     localStorage.setItem("addresses", JSON.stringify(addresses));
 }
+
 
 // Mapping Events
 fieldCEP.addEventListener("input", onlyNumbers);
